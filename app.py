@@ -5,7 +5,165 @@ import requests, pandas as pd, matplotlib.pyplot as plt
 from datetime import datetime, timezone
 import json
 
-st.set_page_config(page_title="Local Weather (NWS)", layout="wide")
+st.set_page_config(page_title="Local Weather (NWS)", layout="wide", initial_sidebar_state="expanded")
+
+# Custom CSS for dark mode theme
+st.markdown("""
+<style>
+    /* Main app styling for dark mode */
+    .stApp {
+        background-color: #0e1117;
+        color: #fafafa;
+    }
+    
+    /* Sidebar styling */
+    .css-1d391kg {
+        background-color: #262730;
+    }
+    
+    /* Button styling for dark mode */
+    .stButton > button {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .stButton > button:hover {
+        background-color: #464649 !important;
+        border-color: #626262 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    }
+    
+    .stButton > button:active {
+        background-color: #1f2937 !important;
+        transform: translateY(0px) !important;
+    }
+    
+    /* Number input styling */
+    .stNumberInput > div > div > input {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+    }
+    
+    .stNumberInput > div > div > input:focus {
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1) !important;
+    }
+    
+    /* Selectbox styling */
+    .stSelectbox > div > div {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+    }
+    
+    .stSelectbox > div > div:focus-within {
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1) !important;
+    }
+    
+    /* Multiselect styling */
+    .stMultiSelect > div > div {
+        background-color: #262730 !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Text input styling */
+    .stTextInput > div > div > input {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1) !important;
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+        font-weight: 500 !important;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background-color: #0ea5e9 !important;
+        color: #ffffff !important;
+        border-color: #0ea5e9 !important;
+    }
+    
+    /* Metric styling */
+    .css-1xarl3l {
+        background-color: #262730 !important;
+        border: 1px solid #464649 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+    }
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+        border: 1px solid #464649 !important;
+        border-radius: 6px !important;
+    }
+    
+    .streamlit-expanderContent {
+        background-color: #1f2937 !important;
+        border: 1px solid #464649 !important;
+        border-top: none !important;
+        border-radius: 0 0 6px 6px !important;
+    }
+    
+    /* Success/Error message styling */
+    .stSuccess {
+        background-color: rgba(34, 197, 94, 0.1) !important;
+        border-left: 4px solid #22c55e !important;
+        color: #22c55e !important;
+    }
+    
+    .stError {
+        background-color: rgba(239, 68, 68, 0.1) !important;
+        border-left: 4px solid #ef4444 !important;
+        color: #ef4444 !important;
+    }
+    
+    .stInfo {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        border-left: 4px solid #3b82f6 !important;
+        color: #3b82f6 !important;
+    }
+    
+    /* Dataframe styling */
+    .stDataFrame {
+        background-color: #262730 !important;
+        color: #fafafa !important;
+    }
+    
+    /* Container and column styling */
+    .block-container {
+        padding-top: 2rem !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.title("🇺🇸  National Weather Service — Local Weather")
 
 # -------- helpers -----------------------------------------------------------
